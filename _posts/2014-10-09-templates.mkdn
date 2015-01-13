@@ -1,0 +1,183 @@
+---
+layout: post
+title:  "Templates"
+date:   2014-10-09 03:24:54
+categories: update
+---
+
+
+Templates
+--------------
+
+- Bits of markup that are meant to be reused with minor changes
+- Twitter – (image, username, and body) * 1000000
+- Very good for dynamic data
+
+Making Templates (without a framework)
+--------------
+
+Write html, in a javascript string
+
+{% highlight javascript %}
+
+var tweetTemplate = “
+<div>
+	<div><img src=‘{image}’ /></div>
+	<div>{username}</div>
+	<div>{body}</div>
+</div>
+“;
+
+//fill in the data
+var userData = {
+ name: “David”,
+ image: “whatever.jpg”,
+ body: “Testing this thing.”
+}
+
+var filledTemplate = TweetTemplate.replace(“{username}”, userData.name);
+filledTemplate = filledTemplate.replace(“{image}”, userData.image);
+filledTemplate = filledTemplate.replace(“{body}”, userData.body);
+
+{% endhighlight %}
+
+
+Why the curly braces in the template?
+-------------------------------
+
+- Its just our way to saying 'this is meant to be replaced later with real data'
+- Seen in a _lot_ of templating engines
+
+Speaking of template engines
+--------------------------------
+
+- Let's take a closer look at one
+- handlebars.js
+
+
+Handlebars.js
+---------------------------------
+
+- http://handlebarsjs.com/
+- Another library, like jQuery
+- Makes your templating, javascripting life easier
+
+Using handlebars
+----------------------------------
+
+4 steps:
+
+1. Write template
+2. Compile template
+3. Add content to the template
+4. Add to DOM
+
+1. Handlebars Template
+--------------------------------
+
+{% highlight html %}
+
+<script id="entry-template" type="text/x-handlebars-template">
+<div class="entry">
+  <h1>{{ "{{   title " }}}}</h1>
+  <div class="body">
+    {{ "{{   body " }}}}
+  </div>
+</div>
+</script>
+
+{% endhighlight %}
+
+2. Compile template
+----------------------------------
+
+{% highlight javascript %}
+
+var source   = $("#entry-template").html();
+var template = Handlebars.compile(source);
+
+{% endhighlight %}
+
+3. Add content to the template
+-----------------------------------
+
+
+{% highlight javascript %}
+
+var context = {title: "My New Post", body: "This is my first post!"}
+var html    = template(context);
+{% endhighlight %}
+
+**BECOMES**
+
+{% highlight html %}
+
+<div class="entry">
+  <h1>My New Post</h1>
+  <div class="body">
+    This is my first post!
+  </div>
+</div>
+
+{% endhighlight %}
+
+
+4. Append to the dom
+--------------------------------
+
+{% highlight javascript %}
+
+var htmlResult  = template(context);
+$(“#myDiv”).append(htmlResult);
+
+{% endhighlight %}
+
+HandlebarsJS - Each helper
+------------------------------------
+
+- With a lot of templates you will want to apply the same template to an array of data
+- Most template engines will supply a way to loop through all the data provided
+	- Oftentimes called a ‘foreach’
+- In Handlebars it is called ‘each’
+
+Each example
+--------------------------------------
+
+{% highlight html %}
+<script id="people-template" type="text/x-handlebars-template">
+	<ul class="people_list">
+		 {{ "{{  #each people" }}}}
+			 <li>{{ "{{  this" }}}}</li> 
+		{{ "{{  /each" }}}} 
+	</ul> 
+</script>
+{% endhighlight %}
+
+{% highlight javascript %}
+var data = { 
+	people: [ 
+		"Yehuda Katz", 
+		"Alan Johnson", 
+		"Charles Jolley" 
+		]
+ } 
+
+
+//get template and compile
+var source   = $("#people-template").html();
+var template = Handlebars.compile(source);
+
+//put in data add to DOM
+var htmlResult  = template(data);
+$(“#myDiv”).append(htmlResult);
+
+{% endhighlight %}
+
+{% highlight html %}
+<ul class="people_list"> 
+	<li>Yehuda Katz</li> 
+	<li>Alan Johnson</li> 
+	<li>Charles Jolley</li>
+ </ul> 
+{% endhighlight %}
+

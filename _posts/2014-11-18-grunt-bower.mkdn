@@ -1,0 +1,170 @@
+---
+layout: post
+title:  "Command line tools"
+date:   2014-11-18 03:24:54
+categories: update
+---
+
+Grunt
+------------------
+
+[grunt.js](http://gruntjs.com/)
+
+- Javascript task runner
+- Used to automate tasks
+
+- Common tasks automated:
+	- Taking all JS files and merging them into one file
+	- Starting a web server
+	- Verifying code is written correctly
+	- Obfuscating javascript code
+
+[Getting started](http://gruntjs.com/getting-started)
+
+- **In your root directory** package.json file, Gruntfile.js file
+- package.json: describes what grunt packages of code this project uses
+- Gruntfile.js: actually describes how to use those packages
+
+
+**package**
+
+- Can have items added to it through "npm install" whatever, with the flag --save-dev
+
+- Here is a premade one that I'll be using for our projects.
+- You can install the dependencies with "npm install". It will download all the source files for you and put them into your node source libraries
+
+{% highlight json %}
+{
+  "name": "my-project-name",
+  "version": "0.1.0",
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-concat": "~0.6.3",
+    "grunt-contrib-watch": "~0.2.0",
+    "grunt-contrib-connect": "~0.5.0",
+    "grunt-contrib-uglify": "~0.5.0"
+  }
+}
+{% endhighlight %}
+
+
+{% highlight javascript %}
+//wrapper function
+module.exports = function(grunt) {
+
+  // Project configuration.
+  grunt.initConfig({
+    pkg: grunt.file.readJSON('package.json'), //required
+
+    //specialized setup
+    uglify: {
+      options: {
+        banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
+      }
+    }
+  });
+
+  // load plugins
+  grunt.loadNpmTasks('grunt-contrib-uglify');
+
+  // register tasks for grunt to run
+  grunt.registerTask('default', ['uglify']);
+
+};
+
+{% endhighlight %}
+
+
+Here is the grunt file we'll be using
+
+{% highlight javascript %}
+module.exports = function(grunt) {
+  grunt.initConfig({
+    
+    pkg: grunt.file.readJSON('package.json'),
+    concat: {
+      options: {
+        // define a string to put between each file in the concatenated output
+        separator: ';'
+      },
+      dist: {
+        // the files to concatenate
+        src: ['src/**/*.js'],
+        // the location of the resulting JS file
+        dest: 'js/<%= pkg.name %>.js'
+      }
+    },
+    watch: {
+      scripts: {
+        files: ['src/**/*.js'],
+        tasks: ['concat'],
+        options: {
+          spawn: false,
+        },
+      },
+    },
+    connect: {
+        target:{
+            options: {
+                port: 9001
+            }
+        }
+    }
+      
+  });
+    
+
+	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-contrib-concat');
+	grunt.loadNpmTasks('grunt-contrib-connect');
+
+	grunt.registerTask('default', ['connect','watch']);
+};
+{% endhighlight %}
+
+Explanation of the plugins
+
+**Concat**
+
+- Turns a series of javascript files in a directory into one file, allowing you to only include one file at a time.
+- This particular one will take every script in the src directory and turn it into a file named js/<%= pkg.name %>.js (so ours would be js/my-project-name.js)
+
+The problem is that it would be a real pain to have to run this code every time you made a change. Enter watch.
+
+**watch**
+
+Watch will run a grunt command whenever a file is edited and changed. In our case it watches all of the files in our src folder, and when it sees a change, it will run the commands in its tasks array (concat in our case). 
+
+**Connect**
+
+This particular plugin starts up a server for us. This may or may not be needed for certain development environments, but can be useful if you don't want to bother with setting up a server. This gruntfile starts a server on port 9001, so you could see your site at localhost:9001
+
+
+**Loading**
+
+In order for the tasks to run, you need to load the tasks in using `grunt.loadNpmTasks`. Note that we load in the three mentioned above.
+
+**Register Task**
+
+Finally grunt needs to know what tasks it actually will be running. It does this through the "registerTask" call. This tells grunt to start our server up and begin watching our files in the src folder.
+
+
+Bower
+------------------
+
+[Bower](http://bower.io/) is a package manager for the web. In other words, while grunt builds and handles backend stuff, bower brings in commonly used javascript files for your front end. It both saves you a trip to download, allows you to easily update thhe tiles, and generally inform other users precisely what addons you are expecting your project to have.
+
+
+**Install**
+
+`npm install -g bower`
+
+**Use**
+
+`bower install <package>`
+
+**For instance**
+
+`bower install jquery`
+`bower install handlebars`
+`bower install bootstrap`

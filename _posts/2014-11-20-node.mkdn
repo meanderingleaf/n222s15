@@ -1,0 +1,69 @@
+---
+layout: post
+title:  "Node"
+date:   2014-11-20 03:24:54
+categories: update
+---
+
+Node
+------------------------
+
+Describes itself as
+
+	Node.js® is a platform built on Chrome's JavaScript runtime for easily building fast, scalable network applications. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient, perfect for data-intensive real-time applications that run across distributed devices.
+
+
+In essence what this means is that *node is a way to write javascript code that acts as a server (backend)*
+
+Node is used for a lot more than just servers (see grunt, bower, and yeoman) for the modern web developer and is quickly becoming a required tool.
+
+Installing node
+----------------------------
+
+In case you haven't already - [Node.js](http://www.nodejs.org/)
+
+What comes with node
+------------------------------
+
+- node: command/process on you computer that will run javascript files outside the context of the web browser
+- npm: (short for node package manager). A tool that lets you download commonly used node utilities from the command line.
+
+
+Using node
+---------------------------
+
+a very basic example.
+
+Make a file named "nodeServerExample.js". Put this code into it:
+
+{% highlight javascript %}
+var http = require('http');
+http.createServer(function (req, res) {
+  res.writeHead(200, {'Content-Type': 'text/plain'});
+  res.end('Hello World\n');
+}).listen(1337, '127.0.0.1');
+console.log('Server running at http://127.0.0.1:1337/');
+{% endhighlight %}
+
+Find this file in the command prompt. When you do, enter `node nodeServerExample.js`. You'll see a message " Server running at http://127.0.0.1:1337/". And if you go to http://127.0.0.1:1337/ in your browser of the web you will see a wonderful message, "Hello world".
+
+
+Again, node is something that *runs javascript on your computer* without the need for a browser.
+
+
+NPM
+-------------------------------------
+
+Node package manager helps us get other node utilities.
+
+It is also a command line tool. We'll use it soon to get grunt and bower, but here's some other examples:
+
+`npm install underscore`
+
+This will fetch all the files for the underscore project and put it into whatever directory you are currently in the command line.
+
+Sometimes you want all your projects (and your command line tool) to have acess to a particular set of javascript code. To enable this, use the -g flag, like so:
+
+`npm install -g grunt`
+
+This line above will install grunt, and allow it you use it in the future on your command line (or in _any_ project of yours.)

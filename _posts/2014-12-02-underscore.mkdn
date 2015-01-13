@@ -1,0 +1,105 @@
+---
+layout: post
+title:  "Underscore"
+date:   2014-12-02 03:24:54
+categories: update
+---
+
+
+Underscore
+-------------------------
+
+
+[Underscore.js](http://underscorejs.org/) is a javascript library that "useful functional programming helpers without extending any built-in objects."
+
+In this class we're going to be using it primarily for its ability to work with collections (such as our JSON data). You can think of collections, typically, as arrays of objects.
+
+Typically when you have a collection you are quite often going to need to do a few things with them:
+
+1. Sort them
+2. Filter them (select only a certain portion of the collection based on some test)
+3. Search them (for a particular value/item)
+
+
+
+Our data
+-------------------------------
+
+{% highlight javascript %}
+{
+
+    "list": [
+        { "id": 0, "name": "Zanizlauz", "type": "Fictional" },
+        { "id": 1, "name": "Daniel", "type": "Real" },
+        { "id": 2, "name": "Leo", "type": "Real" },
+        { "id": 3, "name": "Four-Fifty", "type": "Absurd" }
+    ]
+
+}
+{% endhighlight %}
+
+
+Sorting Collections
+--------------------------------
+
+Done with the **[_.sortBy](http://underscorejs.org/#sortBy)** method. 
+
+- Takes a collection object
+- Sorts low-to-high based on what the second argument (a function) returns
+- Returns a new, sorted array
+
+{% highlight javascript %}
+$.getJSON('data/data.json', function(data) {
+ 	//returns an array with the objects in alphabetical order by name
+    var res = _.sortBy(data.list, function(item){ return item.name; } );
+    console.log(res);
+})
+{% endhighlight %}
+
+Filtering Collections
+---------------------------------------
+
+Done with the **[_.filter](http://underscorejs.org/#filter)** method, or the (simpler) **[_.where](http://underscorejs.org/#where)** method.
+
+**filter**
+
+- Takes a collection object
+- Second argument is how you want to filter items out (return 'true' if you want them in the filtered array)
+- Returns all elements that pass the filter test
+
+{% highlight javascript %}
+	//will return an array with only the names of type "real"
+	var res = _.filter(data.list, function(item) { return item.type == "Real"});
+	console.log(res);
+{% endhighlight %}'
+
+
+**where**
+
+- Takes a collection object
+- Second is properties and the values they must be in order to be added to the new collection
+- Returns all elements that have the same value in the properties
+
+{% highlight javascript %}
+	//will return an array with only the names of type "real"
+	var res = _.where(data.list, { type: "Real" });
+	console.log(res);
+{% endhighlight %}'
+
+
+Searching Collections
+-----------------------------------------
+
+(For a single item)
+
+Done with the **[_.findWhere](http://underscorejs.org/#findWhere)** method.
+
+- Takes a collection object
+- Second is properties and the values of the object you are looking for
+- Returns the **first element** that matches the properties and values
+
+{% highlight javascript %}
+	//will return an array with only the names of type "real"
+	var res = _.findWhere(data.list, function(item) { id: 1 });
+	console.log(res);
+{% endhighlight %}

@@ -1,0 +1,173 @@
+---
+layout: post
+title:  "Prototypes"
+date:   2014-11-12 03:24:54
+categories: update
+---
+
+Another look at making reusable objects
+--------------------------------
+
+
+Javascript is a prototype-based language
+
+(And I really wish that meant it was the father of all other languages)
+
+What this means is that every object references another object for its 'prototype', or, what it can do by default.
+
+
+
+Making a base object
+--------------------------------
+
+
+{% highlight javascript %}
+	var Pirate = new function() {
+		this.booty = 10;
+	}
+{% endhighlight %}
+
+
+Using this constructor
+------------------------------
+
+{% highlight javascript %}
+	var pirateOne = new Pirate();
+	var pirateTwo = new Pirate();
+
+	console.log(pirateOne.booty); //10
+	console.log(pirateTwo.booty); //10
+
+	//--Changing value
+	pirateTwo.booty = 0;
+	console.log(pirateTwo.booty); //0
+{% endhighlight %}
+
+
+Adding methods to an object
+----------------------------------
+
+
+{% highlight javascript %}
+function Pirate() {
+	this.booty  = 10;
+}
+
+Pirate.prototype.loot = function() {
+	this.booty += 5;
+}
+
+//--In use ----------------------------
+var stan = new Pirate();
+stan.loot();
+Console.log(stan.booty); //15
+{% endhighlight %}
+
+
+Inheriting methods and properties from another object
+------------------------------------------
+
+{% highlight javascript %}
+function Person() {
+	this.name = “No Name”;
+}
+Person.prototype.sayHello = function() {
+	console.log(“Hi!”);
+}
+function Pirate() {
+	this.booty = 10;
+}
+Pirate.prototype = new Person(); //Pirate is now a Person, has all of Person's methods and properties
+{% endhighlight %}
+
+
+Method chaining
+-------------------------------------------
+
+In Javascript, it is very common to return an object from its own method call
+
+This lets you call another method upon the object
+
+Looks a bit like this:
+
+{% highlight javascript %}
+myObject.someMethod().someOtherMethd();
+{% endhighlight %}
+
+Chaining is used to shorten lines of code
+
+(Looks ‘cleaner’ to many)
+
+Implementing a method chain
+-----------------------------------------
+
+{% highlight javascript %}
+function Person() {
+
+}
+
+Person.prototype.sayHello = function() {
+	console.log(“Hi, I am “ + this.name);
+	return this;
+}
+
+Person.prototype.changeName = function(newName) {
+	this.name = newName;
+	return this;
+}
+{% endhighlight %}
+
+
+Using the method chain
+----------------------------------------
+
+{% highlight javascript %}
+var pete = new Person();
+pete.changeName(“Pirate Pete”).sayHello();
+//Output “Hi, I am Pirate Pete!”
+{% endhighlight %}
+
+Putting it all together
+-------------------------------------------
+
+
+Self-executing anonymous function
+-------------------------------------------
+
+{% highlight javascript %}
+(function() {
+
+}();)
+{% endhighlight %}
+
+An example class
+------------------------------------------
+
+{% highlight javascript %}
+(function(window) {
+	Dog.prototype.name = “Basic Dog”;
+
+	function Dog(breed) {
+		this.breed = breed;
+
+		//private vars
+		var _guts = “some”;
+
+		//getter
+		this.getGuts = function() { return _guts; }
+	}
+
+	//public methods
+	Dog.prototype.bark  =  function() {
+
+	}
+	
+	//private method
+	function innerThroughts(context) {
+		console.log(“My name is” + context.name);
+		conosole.log(“I have guts of “ + context.getGuts() );
+	}
+	window.Dog = Dog;
+
+}(window);)
+{% endhighlight %}

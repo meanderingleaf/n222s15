@@ -1,0 +1,494 @@
+---
+layout: post
+title:  "Object Oriented Principles"
+date:   2014-09-15 03:24:54
+categories: update
+---
+
+
+Ooop!
+----------------------
+
+
+So, lets talk about classes. It won't be too scary.
+
+Class Basics
+---------------------
+
+Classes are a way of **structuring your code** in smaller chunks. Typescript, and many other programming languages, use a method called *object oriented programming* (oftentimes abbreviated as 'oop') to help a programmer define their classes. When you begin to write OOP code, you will want to think about the *thing* you are trying to program, and make a class for concrete *things*. All classes can have methods and properties.
+
+**Methods** - verbs, actions the class can do. These are written as functions inside the class.
+
+**Properties** - nouns, things that define the object. These are the public/private variables inside of an object.
+
+The goal when writing a class is to come up with a set of methods/properties  that adequately defines whatever it is that you are trying to define (or *model*). Here is an example, for an Animal. This code would go inside of an Animal.as file:
+
+{% highlight javascript %}
+
+	
+class Animal {
+    name:string;
+    
+    constructor(theName: string) { 
+    	this.name = theName; 
+    }
+
+    move(meters: number) {
+        alert(this.name + " moved " + meters + "m.");
+    }
+}
+
+
+{% endhighlight %}
+
+
+Constructor Function, Instances, Using Methods and Properties
+----------------------------
+
+*A constructor function is called immediately on class creation.*  It is used to set up the class and get it read to run. So, when is the constructor called? When you make a *new instance* of the class. Here is how we could make a new instance of our Animal class:
+
+{% highlight javascript %}
+
+var myAnimal:Animal = new Animal("Amorphorous");
+myAnimal.move(10);
+
+{% endhighlight %}
+
+The moment that javascript sees `new Animal()` it will create a new *instance* of Animal, and call its constructor.
+
+
+Inheritance
+---------------------------------------
+
+So we know how to make new classes, how to make new *instances* of those classes, and how to use those classes. Let's move on to **inheritance**. 
+
+One major feature of OOP programming is the ability to make a new class that starts with all of the methods and properties of another class. This is called this **extending** a class. Here's an example with a class, Dog, that extends our animal class:
+
+
+{% highlight javascript %}
+
+class Dog extends Animal {
+
+	loyalty:number;
+    
+    constructor(name: string) { 
+    	loyalty = 5;
+    	super(name); 
+    }
+    
+    move() {
+        alert("Running!");
+        super.move(10);
+    }
+
+    bark() {
+    	alert("Woof!");
+    }
+}
+
+
+{% endhighlight %}
+
+A class that extends another class is typically called a **subclass**, and the class it extends is the **superclass**. In this instance, Animal is the superclass, and Dog is the subclass.
+
+And here is an example of using that class:
+
+{% highlight javascript %}
+
+var myDog:Dog = new Dog("Mr. Woof.");
+
+myDog.bark();
+
+console.log(myDog.name); // "Mr. Woof"
+
+//We can still do everything animal can do
+myDog.move();
+
+
+{% endhighlight %}
+
+One way I like to think about inheritance is that it lets you make a class that is *everything and more** than the class it inherits from.
+
+Inheritance is a useful tool, but don't go overboard with it. 
+
+
+Private variables - (Keeping things to ourselves)
+--------------------------------------------------
+
+Let's stop being novice programmers. Its time to use a new keyword with our methods and properties - **private**.
+
+A private variable or method is only accessible within the class itself. In other words, we cannot access a private variable from an instance of the class using the dot. This is typically done for variables that are meant to only be used by the class itself (especially if modifying the variables anywhere else would cause the class to break).
+
+Let's rewrite our animal code a bit to make some private items:
+
+{% highlight javascript %}
+
+class Animal {
+    name:string;
+    private energy:number;
+    
+    constructor(theName: string) { 
+    	this.name = theName; 
+    	this.energy = 0;
+    }
+
+    move(meters: number) {
+        alert(this.name + " moved " + meters + "m.");
+        this.energy --;
+    }
+
+    private digest() {
+    	this.energy ++;
+    }
+
+    eat() {
+    	this.digest();
+    }
+}
+
+{% endhighlight %}
+
+And here's some code we could test elsewhere to see what does and does not work:
+
+{% highlight javascript %}
+
+var testAnimal:Animal = new Animal("Golath"); //oh dear, animal cruelty!
+
+testAnimal.eat(); //works fine
+
+testAnimal.digest(); // Error - can't call a private function!
+trace( testAnimal.energy ); // Error - can't access a private variable!
+
+{% endhighlight %}
+
+Great, so private variables hide undesireable items from being accessed from instances of the class. We have a problem now, though. What if we still want to be able to *read* (just not edit) the animal's energy from an instance? Typescript has a wonderful solution for you - getters and setters.
+
+Getters and Setters
+--------------------------
+
+Getters and setters are a common way to restrict access to variables. Typescript has a fairly elegant way of writing them. Let me show you a getter inside our animal class:
+
+{% highlight javascript %}
+
+
+
+class Animal {
+    name:string;
+    private _energy:number;
+    
+    constructor(theName: string) { 
+    	this.name = theName; 
+    	this.energy = 0;
+    }
+
+    move(meters: number) {
+        alert(this.name + " moved " + meters + "m.");
+        this.energy --;
+    }
+
+    private digest() {
+    	this.energy ++;
+    }
+
+    eat() {
+    	this.digest();
+    }
+
+    get energy():number {
+    	return _energy;
+    }
+
+    set energy(amt:number) {
+    	if(amt > 0) {
+    		this._energy = amt;
+    	}
+    }
+}
+
+
+{% endhighlight %}
+
+This actually introduces three things: private variable naming, the getter function, and the setter function.
+
+Private var naming: notice that the energy variable has been renamed from `energy` to `_energy`. This is a fairly common way to name private variables. If you see an property in a class with an underscore, you can be confident it is a private variable. This also helps you distinguish between public and private propertys. *Note that this is not essential, just good practice*.
+
+Getter: notice that our getter is a function with an extra keyword (**get**). All getter functions *must return a value*. In thise case, we return a `Number` because that is what our energy property is. The getter you see above is a very common one. It just has one line of code that returns the private property that the programmer is requesting.
+
+Setter: Our setter function also has a new keywork (**set**). All setter functions must have *one argument* that is the same type of the property you are trying to set. This one above show a good use of a setter function - checking to make sure the data coming into our class is acceptable. (We don't want this particular animal to have *negative* energy. Its not a student who didn't sleep the night before class or anything).
+
+So, how does one use the new functions? Like a property, actually. Lets take a look:
+
+{% highlight javascript %}
+
+var anAnimal:Animal = new Animal('Doofus');
+
+
+//use our setter function:
+myAnimal.energy = 5;
+
+anAnimal.eat();
+
+//uses our getter function:
+console.log( anAnimal.energy ); // 6
+
+{% endhighlight %}
+
+Overriding
+----------------------------------
+
+So, speaking of sloths (or very tired students), how might we make a subclass that allows us to set negative energy?
+
+
+EXAMPLE INCOMING. LOOK OUT!
+
+{% highlight javascript %}
+
+class Snake extends Animal {
+    constructor(name: string) { super(name); }
+    move() {
+        alert("Flopping...");
+        super.move(5);
+    }
+
+    set energy(amt:number) {
+    	this._energy = amt;
+	}
+
+}
+
+{% endhighlight %}
+
+Overriding a function in a subclass replaces the inherited function with the new one provided. The only caveat is that the argument must take the same arguments, in the same order. THAT'S IT. 
+
+Here, let me prove to you that this sloth can truly have negative energy. (And yes, I understand that I could just write whatever I want and say it works.)
+
+{% highlight javascript %}
+
+var anAmial:Animal = new Animal();
+anAnimal.energy = -5;
+trace(anAnimal.energy); // 0
+
+var aSloth:Sloth = new Sloth();
+sloth.energy = -5;
+trace(sloth.energy); //-5
+
+{% endhighlight %}
+
+Modules
+--------------------------
+
+At the end of the day it is likely you're going to have a lot of classes and you're going to want to associate them all together in a way that doesn't conflict with other packages of code. Modules are one way of doing this.
+
+Let's build out some classes to go along with this package structure:
+
+*Animal.ts*
+
+{% highlight javascript %}
+
+module Animals {
+
+	
+	export class Animal {
+
+		public var name:string;
+		public var age:number;
+		public var genus:string;
+		private var _energy:number = 0;
+
+		constructor() {
+			name = "Mr. Wiggles";
+		}
+
+		eat() {
+			this.digest();
+		}
+
+		private digest() {
+			_energy++;
+		}
+
+		get energy():number {
+			return _energy;
+		}
+
+		set energy(amt:number) {
+			if(amt > 0) {
+				this._energy = amt;
+			}
+		}
+
+	}
+
+}
+
+{% endhighlight %}
+
+And, we move one through two more classes:
+
+*Mamal.ts*
+
+{% highlight javascript %}
+
+module Animals {
+	
+	export class Mamal extends Animal {
+
+		bodyTemp:number;
+		hairAmt:number;
+
+	}
+}
+
+{% endhighlight %}
+
+*Dog.ts*
+
+{% highlight javascript %}
+
+module Animals {
+	
+	export class Dog extends Mamal {
+
+		loyalty:number;
+
+		bark() {
+			trace("Woof!");
+		}
+
+	}
+
+}
+
+{% endhighlight %}
+
+
+And, finally, to my dogs:
+
+*Husky.ts*
+
+{% highlight javascript %}
+
+module Animals {
+
+	export class Husky extends Dog {
+
+		bark()  {
+			//They don't
+		}
+
+		//they do this instead
+		ululate()  {
+			trace("Awwooowoowooowoo!");
+		}
+
+	}
+
+}
+
+{% endhighlight %}
+
+Great. Did you follow that? We are now four folders deep, with three levels of inheritance.
+
+Question for you: how many methods does Husky have?
+
+6, including the getter & setter (7 if you count the constructor)
+
+
+Importing files
+---------------------------------------
+
+Remember, all classes in flash need to be imported. Its fine if you're working with no package. Once you start putting your files into subfolders, however, they *have* to be imported. So, if we want to use our Dog and Animal classes in our code, we will need to write these imports at the top of main.js
+
+{% highlight javascript %}
+
+/// <reference path="Animal.ts" />
+/// <reference path="Dog.ts" />
+/// <reference path="Husky.ts" />
+
+{% endhighlight %}
+
+**important**
+
+In order to have your scripts come in correctly, you will need to add the \--out flag to your command in the typescript file watcher. You can edit this in file->settings->file watchers->seelect typescript and click on the little pencil icon. Add it after the \--sourcemap option
+
+The full line should look like this:
+
+\--out $FileNameWithoutAllExtensions$.js $FileName$
+
+Polymorphism
+--------------------------------------
+
+We are almost done. With classes, at least. Now we have a whole animal kingdom, don't we? What do do with them? How about a party; let's feed them all.
+
+Okay.
+
+Here we go.
+
+{% highlight javascript %}
+
+var animals:Array = new Array();
+
+//fill animals with a random assortment of cats, dogs, echidnas, and fish
+
+
+//loop through and feed them
+for(var i:number = 0; i < animals.length; i++) {
+	var animalAtIndex:??? //Uh oh, we have a problem...
+						//Is this a dog, cat, fish, or whatever else?
+						//hmmm...
+}
+
+{% endhighlight %}
+
+Well, we have a problem. We don't have one type of thing in that array. We have many types (cats, dogs, fish, etc). We can't type them individually in that array, it has to be one type or bust. Thankfully, we don't need to worry about this too much, because they are all **Animals**, which means that we can use *polymorhpism* to its fullest effect.
+
+**Polymorphism** is the ability to treat any subclass as if it were one of it's superclasses instead. When you do this, you lose the capabilities of the subclass, but it allows you to write more broadly applicable code.
+
+An example:
+
+{% highlight javascript %}
+
+var someAnimal:Animal = new Dog(); //yep, this is fine
+
+someAnimal.eat(); // also fine - eat is defined in the Animal class
+someAnimal.bark(); // not acceptable - bark is not defined by the animal class
+
+{% endhighlight %}
+
+Again, polymorphism means that we can use a subclass as if it were its super class, but we only have access to the methods and properties defined by the subclass.
+
+So, let's use polymorphism to go back and fix up our animal party:
+
+{% highlight javascript %}
+
+var animals:Array = new Array();
+
+//fill animals with a random assortment of cats, dogs, echidnas, and fish
+
+
+//loop through and feed them
+for(var i:number = 0; i < animals.length; i++) {
+	
+	//get
+	var animalAtIndex:Animal = animals[i];
+
+	//feed
+	animalAtIndex.eat();
+}
+
+{% endhighlight %}
+
+
+Conclusion
+--------------------------------
+
+That's it! Some points:
+
+- OOP aims to recreate objects via methods (functions) and properties (variables)
+- OOP classes can *inherit* from other classes, giving them all the methods and properties of the superclass
+- Packages are a way to organize your classes. They are based on folders
+- When importing packages, write the folder structure, replacing "/" with "."
+- Classes can be used as if they were their super class. This is *polymorphism*
+
+
+Classes take a little while to get used to, so start programming and don't get discouraged!
