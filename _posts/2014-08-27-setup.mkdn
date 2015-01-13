@@ -1,0 +1,70 @@
+---
+layout: post
+title:  "JQuery and AJAX"
+date:   2014-08-27 03:24:54
+categories: update
+---
+
+Setup
+---------------------
+
+There's a few things you will need on your computer to be ready for the rest of this class.
+
+You will need to install in a few stages.
+
+First will be php storm, node js, and git.
+Second will be grunt and bower.
+
+PHP Storm
+--------------------
+
+As mentioned in the syllabus, you can download it free [here](https://www.jetbrains.com/student/).
+
+Node js
+--------------------
+
+Lets you run javascript on your computer outside the context of the command line. We'll be using this quite frequently in this course. You can download it from [here](http://nodejs.org/).
+
+Git
+--------------------
+
+A program that lets you collaborate on code. Used quite often as a way to fetch packages of code from remote computers.
+
+Download and install it from [here](http://www.git-scm.com/).
+
+(**Windows users** make sure to stick to all the default install options. You may need to restart your computer before taking the next steps.)
+
+
+Installing grunt and bower
+---------------------
+
+Grunt and bower are both programs that are run by node. They're installed via something called the [node package manager](https://www.npmjs.com/), and you'll have to the thse command line interface to do so.
+
+On mac, open up spotlight and run 'terminal'. On windows, search for and run the 'command prompt' and you'll be presented with your own little 'hacker interface'.
+
+First, make sure you have node installed. Type this:
+
+`node -v`
+
+and hit enter. You should get a version number feedback on the next line "mine is 'v0.10.18'"
+
+So long as you get the version number correct, you are ready to setup bower and grunt. Keep the command line open:
+
+Installing Grunt
+---------------------
+
+With the command line still open, type this:
+
+`npm install -g grunt-cli`
+
+[website](http://gruntjs.com/)
+
+
+Installing bower
+-------------------------
+
+With the command line still open, type this:
+
+`npm install -g bower`
+
+[website](http://bower.io/)

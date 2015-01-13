@@ -41,6 +41,65 @@ Lots of support for jQuery in the community
 
 Tons of plugins developed
 
+jQuery
+-----------------------------
+
+Is, fundamentally, a DOM manipulation javascript library. It provides the developer with a set of tools to select DOM elements, modify, add, and remove them.
+
+Additionally it provides a developer with easy access to robust implementations of animations, event handling, and AJAX.
+
+Getting jQUery
+---------------------------------------
+
+There's a number of ways to get jquery
+
+1. Download the library at [http://jquery.com/](http://jquery.com/)
+
+	- Download it an include it with your files
+	- Typically stored in a folder called ‘js’ or ‘scripts’
+
+2. Or, use the version hosted on google ajax libraries
+
+	- Will load faster on user machines who have already visited a site that used this jQuery link
+	- Will _not_ work if you do not have an internet connection and are developing on your local machine
+	- 
+
+3. Install using bower
+	
+	- On the commandline (make sure youre inside your project folder) `bower install jquery`
+	- I'll be using this in class a lot
+
+(For this class always download and include jQuery in your project)
+
+Including jQuery
+----------------------------------------
+
+- Use the src attribute of the script tag
+- Make sure to include jquery scripts before any of your other scripts
+- Else you won’t be able to use jQuery (it won’t be loaded in yet)
+
+{% highlight html %}
+	<script src="js/jquery.min.js"></script>
+{% endhighlight %}
+
+
+**note** the location & name may change base on where you have put your jquery file.
+
+Waiting until the page has fully loaded
+--------------------------
+
+It is common, when using jQuery, to wait until a page has fully loaded before running any selector code. This ensures that the the elements on the page that are you trying to select are actually selectable. The syntax for waiting for a page to load in jQuery looks like this:
+
+{% highlight javascript %}
+$( document ).ready(function() {
+ 	//its safe to write jquery selectors in here.
+});
+{% endhighlight %}
+
+
+Almost all of our jquery code you will see contained inside of a document ready event handler.
+
+
 jQuery: Selectors
 --------------------------
 
@@ -190,32 +249,29 @@ $(“.someClassName”).mouseout(function() {
 });
 {% endhighlight %}
 
-Getting jQUery
----------------------------------------
 
-Download the library at [http://jquery.com/](http://jquery.com/)
+Caching Selected elements
+-----------------------------------------
 
-	- Download it an include it with your files
-	- Typically stored in a folder called ‘js’ or ‘scripts’
-
-Or, use the version hosted on google ajax libraries
-
-	- Will load faster on user machines who have already visited a site that used this jQuery link
-	- Will _not_ work if you do not have an internet connection and are developing on your local machine
+It is possible to store the selected elements in code for later reference. Here's one, dumb example.
 
 
-(For this class always download and include jQuery in your project)
+{% highlight javascript %}
 
-Including jQuery
-----------------------------------------
+//get a ref to 'markedDiv'
+var soonToBeDead = $("#markedDiv");
 
-- Use the src attribute of the script tag
-- Make sure to include jquery scripts before any of your other scripts
-- Else you won’t be able to use jQuery (it won’t be loaded in yet)
-
-{% highlight html %}
-	<script src="js/jquery.min.js"></script>
+//that ref works like a selected jQuery object
+soonToBeDead.click(function() {
+	//remove soon to be dead from the DOM
+	soonToBeDead.remove();
+});
 {% endhighlight %}
+
+
+Caching selections are makes it easy to update your code (only have to change one selector if you give a div a new ID), and saves the computer some processing time (everytime you write `$()` the selector engine has to go out looking for whatever you specify it to look for which takes time).
+
+
 
 AJAX
 -----------------------------------------
