@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "JQuery and AJAX"
+title:  "Setup"
 date:   2014-08-27 03:24:54
 categories: update
 ---

@@ -1,0 +1,131 @@
+---
+layout: post
+title:  "Ajax"
+date:   2014-09-02 03:24:54
+categories: update
+---
+
+Ajax
+===================
+
+
+- Short for Asynchronous Javascript and XML
+- A method for loading in textual resources at runtime
+- Developed by Microsoft
+- First seen in Internet Explorer 5
+- Retreives data 'asynchronously'
+	- This means that the script can continue to run, even as the data is being loaded
+- Even though there is an 'x' for XML in the name, XML is not strictly required.
+
+Ajax is these technologies working together
+------------------------------------------
+
+- HTML and CSS for visual design
+- XMLHttpRequest to load in new data
+- the DOM for adding in new display content
+
+XMLHttpRequest
+-------------------------------------------
+
+Is, essentially, a way of 'visiting' a webpage in javascript, and loading in the page's response into a string. Its possible to send data to the site like you would through a form on a normal page.
+
+AJAX
+-------------------------------------------
+
+A way of loading in new content for your application **at runtime**
+
+- XML
+- JSON
+- Entirely new pages
+- Lightboxes
+
+Can send data along with the request as well
+
+- POST
+- GET
+
+jQuery AJAX
+---------------------------------------------
+
+Taken from jQuery's [Ajax docs](http://api.jquery.com/jQuery.ajax/)
+
+{% highlight javascript %}
+$.ajax({
+  type: "POST",
+  url: "some.php",
+  data: { name: "John", location: "Boston" }
+})
+.done(function( msg ) {
+	alert( "Data Saved: " + msg );
+});
+{% endhighlight %}
+
+- This example actually sends data to a php script
+- **url** Specifies where to send(and load) data to
+- **data** A javascript object of data to send to the backend
+- **type** Specifies how the data will be sent
+- a chained function (**done**) is run when the ajax loads the server response.
+	- Note that the success function takes an argument wich will contain the server response.
+
+Short form - get
+---------------------------------------------
+
+The long form of the ajax call is pretty gruesome. jQuery offers a shorter form that we will be using throughout this class. It looks like this:
+
+
+{% highlight javascript %}
+$.get("example.txt", function(data) {
+	console.log(data);
+})
+{% endhighlight %}
+
+- This form is much easier to use when you just want to load in something from the server without needing to send data.
+
+- Supply an object to the ajax function
+- Specify URL to load
+- Specify function to run if the load is a success
+- Again the function takes an argument which contains the server response.
+
+
+An example
+--------------------------------------
+
+The html (index.html)
+
+{% highlight javascript %}
+<div>
+	<div id="soontobe"></div>
+	<button id="btnLoad">Load content</button>
+</div>
+{% endhighlight %}
+
+The content the load (content.txt)
+
+{% highlight javascript %}
+<h1>It happened!</h1>
+<script type="text/javascript">
+	alert("It loaded.");
+</script>
+{% endhighlight %}
+
+The javascript
+
+{% highlight javascript %}
+var contentDiv = $("#soontobe");
+var btnLoad = $("#btnLoad");
+
+btnLoad.click(function() {
+	$.get("content.txt", function(data) {
+		contentDiv.html(data);
+	})
+})
+
+{% endhighlight %}
+
+The result
+
+
+Take note
+----------------------------------
+
+All scripts in a loaded ajax page will run the moment they are added to the DOM

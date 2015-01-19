@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "JQuery and AJAX"
-date:   2014-09-02 03:24:54
+title:  "JQuery"
+date:   2014-09-01 03:24:54
 categories: update
 ---
 
@@ -270,54 +270,3 @@ soonToBeDead.click(function() {
 
 
 Caching selections are makes it easy to update your code (only have to change one selector if you give a div a new ID), and saves the computer some processing time (everytime you write `$()` the selector engine has to go out looking for whatever you specify it to look for which takes time).
-
-
-
-AJAX
------------------------------------------
-
-Short for Asynchronous Javascript and XML
-
-	- A method for loading in textual resource at runtime
-	- Developed by Microsoft
-
-
-AJAX
--------------------------------------------
-
-A way of loading in new content for your application **at runtime**
-
-	- XML
-	- JSON
-	- Entirely new pages
-	- Lightboxes
-
-Can send data along with the request as well
-
-	- POST
-	- GET
-
-jQuery AJAX
----------------------------------------------
-
-{% highlight javascript %}
-$.get("example.txt", function(data) {
-	console.log(data);
-})
-{% endhighlight %}
-
-- Supply an object to the ajax function
-- Specify URL to load
-- Specify function to run if the load is a success
-
-
-Inline functions
----------------------------------------------
-
-This is the first time we have seen an inline function
-
-	- Inline functions are ones that we define within another function’s context
-
-Typically they do not have a name
-
-You will see these a lot in javascript
