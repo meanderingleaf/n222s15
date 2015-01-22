@@ -1,0 +1,97 @@
+---
+layout: post
+title:  "Ajax Site"
+date:   2014-09-03 03:24:54
+categories: update
+---
+
+Building an ajax site
+=====================================
+
+
+Basic markup
+-----------------------------------
+
+
+
+{% highlight html %}
+        <div class="container">
+            <div id="nav">
+                <ul>
+                    <li id="home">Home</li>
+                    <li id="work">Work</li>
+                    <li id="about">About</li>
+                </ul>
+            </div>
+            <div id="content"></div>
+        </div>
+{% endhighlight %}
+
+
+- The **content** div is where all of our content will be going for this class.
+
+
+Using a link to load (via AJAX) part of a page
+-----------------------------------
+
+{% highlight javascript %}
+	//when home is clicked
+	$("#home").click(function() {
+		//load up the home data
+		$.get("home.html", function(data) {
+			//add the home data to the page
+			$("#content").html(data);
+		})
+	})
+{% endhighlight %}
+
+
+Abstracting our page load
+------------------------------------
+
+Since we'll be loading a lot of pages, it makes more sense to use a function like so:
+
+{% highlight javascript %}
+ 	function loadPage(resource) {
+ 		//load in the specified page
+        $.get("pages/" + resource, function (data) {
+        	//add the loaded resource to the DOM
+            $("#content").html(data);
+        });
+    }
+{% endhighlight %}
+
+
+Using the hash
+------------------------------------
+
+In some applications you might see that the url has a hash # in it, followed by some data. This lets us send extra data to the page when it loads, sort of like posting data to backend servers.
+
+`www.something.com/index.html#home`
+
+To get the hash in Javascript, you use window.hash
+
+{% highlight javascript %}
+window.location.hash
+{% endhighlight %}
+
+In the above url, the value of window.location.hash will be "#home".
+(And, if there was no hash, its value would be undefined.)
+
+Typically, you will want to do this right as the page loads and take some action on it (in this case we'll be routing to certain pages based on load).
+
+{% highlight javascript %}
+	//this checks to see if there's a 'truthy' value in window.location.hash (essentially if it doesn't say 'undefined')
+	if(window.location.hash) {
+		//there is a hash, let's get just the word from it, sans #
+		var hashValue = window.location.hash.replace("#", "");
+
+		//we can take action based on the hash. In this case, we'll use it to load up different pages
+		if(hashValue == "home") {
+			loadPage("home");
+		}
+	}
+{% endhighlight %}
+
+
+**Question**: how can you further simplfy the above code?
