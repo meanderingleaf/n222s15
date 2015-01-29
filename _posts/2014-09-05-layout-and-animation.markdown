@@ -235,26 +235,25 @@ $("#nav li").each(function(index) {
 {% endhighlight %}
 
 
-Tweenlite
+Velocity
 ---------------------------------
 
-- Another way to animate
-- Get it at (http://www.greensock.com/)[http://www.greensock.com/]
-
-- Include tweenlite.min.js
+- A javascript library built for animation
+- Get it at [http://julian.com/research/velocity/](http://julian.com/research/velocity/)
+- Include velocity.min.js
 	- AFTER jQuery
-
 - Can tween everything jQuery does, and a few things more
+- Typically faster than jquery's animate function
 
 {% highlight javascript %}
-TweenLite.to("#myID", 2, {backgroundColor:"#ff0000", width:"50%", top:"100px", ease:Power2.easeInOut});
+$("#something").velocity({ opacity: 0.5, x: 10, y: 20 });
 {% endhighlight %}
 
 
-- If you include the CSS plugin, can also do some _very useful_ properties, like scale
+- Can also tween transforms
 
 {% highlight javascript %}
-TweenLite.to(element, 2, {rotation:30, scaleX:0.8});
+$("#something").velocity({ rotation:30, scaleX:0.8 });
 {% endhighlight %}
 
 
@@ -285,15 +284,15 @@ Tweenlite button rollovers
 **Code**
 
 {% highlight html %}
-<script src="../libs/jquery.min.js"></script>
-<script src="../libs/gs/TweenLite.min.js"></script>
-<script src="../libs/gs/plugins/CSSPlugin.min.js"></script>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/velocity/velocity.min.js"></script>
+    <script src="bower_components/velocity/velocity.ui.min.js"></script>
 <script>
 	$(document).ready(function() {
 		$("#testDiv").mouseover(function() {
-			TweenLite.to(this, .7, { opacity: 1, scale: 1.2});
+			$(this).velocity({ opacity: 1, scaleX: 1.2, scaleY: 1.2});
 		}).mouseout(function() {
-			TweenLite.to(this, .7, { opacity: .5, scale: .9});
+			$(this).velocity({ opacity: 0, scaleX: 1, scaleY: 1});
 		})
 	})
 </script>
