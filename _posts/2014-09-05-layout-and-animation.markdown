@@ -154,8 +154,8 @@ $( "#book" ).animate(
  - The book element will be 50 pixels further to the right.
 
 
- Setting DOM elements to be moved
- --------------------------------------
+Setting DOM elements to be moved
+--------------------------------------
 
  - In order to move divs in the x/y direction, they need to be positioned either:
  	- **Absolutely**
@@ -257,7 +257,7 @@ $("#something").velocity({ rotation:30, scaleX:0.8 });
 {% endhighlight %}
 
 
-Tweenlite button rollovers
+Velocity JS button rollovers
 ------------------------------------
 
 **Markup**
@@ -302,4 +302,4 @@ Tweenlite button rollovers
 Principles (Google Material Design)
 ------------------------------------------
 
-(Solid introduction to the basics)[http://www.google.com/design/spec/material-design/introduction.html]
+[Solid introduction to the basics](http://www.google.com/design/spec/material-design/introduction.html)
