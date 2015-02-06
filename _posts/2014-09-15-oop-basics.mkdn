@@ -1,51 +1,45 @@
 ---
 layout: post
-title:  "Object Oriented Principles"
+title:  "Object Oriented Programming"
 date:   2014-09-15 03:24:54
 categories: update
 ---
 
+Object Oriented Programming
+=================
 
-Ooop!
-----------------------
+Javascript - does not have "classes" exactly, but something similar in concept. Instead you can make and modify object templates.
 
-
-So, lets talk about classes. It won't be too scary.
-
-Class Basics
+Objects Basics
 ---------------------
 
-Classes are a way of **structuring your code** in smaller chunks. Typescript, and many other programming languages, use a method called *object oriented programming* (oftentimes abbreviated as 'oop') to help a programmer define their classes. When you begin to write OOP code, you will want to think about the *thing* you are trying to program, and make a class for concrete *things*. All classes can have methods and properties.
+Objects (especially the prototypes we will be usin in JS) are a way of **structuring your code** into smaller chunks.
+They typically have two parts to them:
 
-**Methods** - verbs, actions the class can do. These are written as functions inside the class.
+**Methods** - verbs, actions the object can do. These are written as functions inside the object.
 
-**Properties** - nouns, things that define the object. These are the public/private variables inside of an object.
+**Properties** - nouns, things that define the object. These are the variables inside of an object.
 
-The goal when writing a class is to come up with a set of methods/properties  that adequately defines whatever it is that you are trying to define (or *model*). Here is an example, for an Animal. This code would go inside of an Animal.as file:
+The goal when writing an object is to come up with a set of methods/properties  that adequately defines whatever it is that you are trying to define (or *model*). Here is an example for an Animal:
 
 {% highlight javascript %}
 
-	
-class Animal {
-    name:string;
-    
-    constructor(theName: string) { 
-    	this.name = theName; 
-    }
 
-    move(meters: number) {
-        alert(this.name + " moved " + meters + "m.");
-    }
+function Animal(animalName) {
+    this.name = animalName;   
+}
+
+Animal.prototype.move = function(meters) {
+    alert(this.name + " moved " + meters + "m.");
 }
 
 
 {% endhighlight %}
 
-
 Constructor Function, Instances, Using Methods and Properties
 ----------------------------
 
-*A constructor function is called immediately on class creation.*  It is used to set up the class and get it read to run. So, when is the constructor called? When you make a *new instance* of the class. Here is how we could make a new instance of our Animal class:
+**A constructor function is called immediately on object creation.**  In the case of javascript it is simply the function itself that runs and, typically, sets a number of variables inside of the 'this' context. It is used to set up the class and get it read to run. So, when is the constructor called? When you make a *new instance* of the class. Here is how we could make a new instance of our Animal class:
 
 {% highlight javascript %}
 
@@ -54,38 +48,29 @@ myAnimal.move(10);
 
 {% endhighlight %}
 
-The moment that javascript sees `new Animal()` it will create a new *instance* of Animal, and call its constructor.
+The moment that javascript sees `new Animal()` it will create a new *instance* of Animal (essentially creating a new object in javascript memory.) If one writes `new Animal()` again, it will create a **second, distinct object**
 
 
 Inheritance
 ---------------------------------------
 
-So we know how to make new classes, how to make new *instances* of those classes, and how to use those classes. Let's move on to **inheritance**. 
+So we know how to make new objects, how to make new *instances* of those objects, and how to use those objects. Let's move on to **inheritance**. 
 
-One major feature of OOP programming is the ability to make a new class that starts with all of the methods and properties of another class. This is called this **extending** a class. Here's an example with a class, Dog, that extends our animal class:
+One major feature of OOP programming is the ability to make a new object that starts with all of the methods and properties of another object. This is called this **extending** an object. Here's an example with a object, Dog, that extends our animal object:
 
 
 {% highlight javascript %}
 
-class Dog extends Animal {
-
-	loyalty:number;
-    
-    constructor(name: string) { 
-    	loyalty = 5;
-    	super(name); 
-    }
-    
-    move() {
-        alert("Running!");
-        super.move(10);
-    }
-
-    bark() {
-    	alert("Woof!");
-    }
+function Dog(animalName) {
+    Animal.call(this, name); 
+    //this calls the animal 'constructor' on this dog object, running all of the lines of code inside of the animal function as if it were on the dog instead.
 }
 
+Dog.prototype = new Animal(); // dog will now have all the methods and properties of of animal
+
+Dog.prototype.bark = function() {
+    alert("Woof");
+}
 
 {% endhighlight %}
 
@@ -102,106 +87,48 @@ myDog.bark();
 console.log(myDog.name); // "Mr. Woof"
 
 //We can still do everything animal can do
-myDog.move();
+myDog.move(22);
 
 
 {% endhighlight %}
 
 One way I like to think about inheritance is that it lets you make a class that is *everything and more** than the class it inherits from.
 
-Inheritance is a useful tool, but don't go overboard with it. 
-
-
-Private variables - (Keeping things to ourselves)
---------------------------------------------------
-
-Let's stop being novice programmers. Its time to use a new keyword with our methods and properties - **private**.
-
-A private variable or method is only accessible within the class itself. In other words, we cannot access a private variable from an instance of the class using the dot. This is typically done for variables that are meant to only be used by the class itself (especially if modifying the variables anywhere else would cause the class to break).
-
-Let's rewrite our animal code a bit to make some private items:
-
-{% highlight javascript %}
-
-class Animal {
-    name:string;
-    private energy:number;
-    
-    constructor(theName: string) { 
-    	this.name = theName; 
-    	this.energy = 0;
-    }
-
-    move(meters: number) {
-        alert(this.name + " moved " + meters + "m.");
-        this.energy --;
-    }
-
-    private digest() {
-    	this.energy ++;
-    }
-
-    eat() {
-    	this.digest();
-    }
-}
-
-{% endhighlight %}
-
-And here's some code we could test elsewhere to see what does and does not work:
-
-{% highlight javascript %}
-
-var testAnimal:Animal = new Animal("Golath"); //oh dear, animal cruelty!
-
-testAnimal.eat(); //works fine
-
-testAnimal.digest(); // Error - can't call a private function!
-trace( testAnimal.energy ); // Error - can't access a private variable!
-
-{% endhighlight %}
-
-Great, so private variables hide undesireable items from being accessed from instances of the class. We have a problem now, though. What if we still want to be able to *read* (just not edit) the animal's energy from an instance? Typescript has a wonderful solution for you - getters and setters.
-
 Getters and Setters
 --------------------------
 
-Getters and setters are a common way to restrict access to variables. Typescript has a fairly elegant way of writing them. Let me show you a getter inside our animal class:
+Some programming languages have a concept called "getters and setters" which are, essentially, methods that work like properties.
+
+Javascript doesn't have these, but we're going to simulate them with getter and setter functions.
 
 {% highlight javascript %}
 
+function Animal(name) {
+    this.name = name;
+    this._energy = 10;
+}
 
 
-class Animal {
-    name:string;
-    private _energy:number;
-    
-    constructor(theName: string) { 
-    	this.name = theName; 
-    	this.energy = 0;
-    }
+Animal.prototype.move = function(meters) {
+    alert(this.name + " moved " + meters + ".");
+    this.energy --;
+}
 
-    move(meters: number) {
-        alert(this.name + " moved " + meters + "m.");
-        this.energy --;
-    }
+Animal.prototype.digest = function() {
+    this.energy ++;
+}
 
-    private digest() {
-    	this.energy ++;
-    }
+Animal.prototype.eat = function() {
+    this.digest();
+}
 
-    eat() {
-    	this.digest();
-    }
+Animal.prototype.getEnergy = function() {
+    return _energy;
+}
 
-    get energy():number {
-    	return _energy;
-    }
-
-    set energy(amt:number) {
-    	if(amt > 0) {
-    		this._energy = amt;
-    	}
+Animal.prototype.setEnergy = function(amt) {
+    if(amt > 0) {
+        this._energy = amt;
     }
 }
 
@@ -210,9 +137,9 @@ class Animal {
 
 This actually introduces three things: private variable naming, the getter function, and the setter function.
 
-Private var naming: notice that the energy variable has been renamed from `energy` to `_energy`. This is a fairly common way to name private variables. If you see an property in a class with an underscore, you can be confident it is a private variable. This also helps you distinguish between public and private propertys. *Note that this is not essential, just good practice*.
+Private var naming: notice that the energy variable has been renamed from `energy` to `_energy`. This is a fairly common way to name private variables. If you see an property in a class/object with an underscore, you can be confident it is a private variable. This also helps you distinguish between public and private propertiess. *Note that this is not essential, just good practice*.
 
-Getter: notice that our getter is a function with an extra keyword (**get**). All getter functions *must return a value*. In thise case, we return a `Number` because that is what our energy property is. The getter you see above is a very common one. It just has one line of code that returns the private property that the programmer is requesting.
+Getter: notice that our getter is a function with an extra keyword (**get**). All getter functions *must return a value*. The getter you see above is a very common one. It just has one line of code that returns the private property that the programmer is requesting.
 
 Setter: Our setter function also has a new keywork (**set**). All setter functions must have *one argument* that is the same type of the property you are trying to set. This one above show a good use of a setter function - checking to make sure the data coming into our class is acceptable. (We don't want this particular animal to have *negative* energy. Its not a student who didn't sleep the night before class or anything).
 
@@ -229,7 +156,7 @@ myAnimal.energy = 5;
 anAnimal.eat();
 
 //uses our getter function:
-console.log( anAnimal.energy ); // 6
+console.log( anAnimal.getEnergy() ); // 6
 
 {% endhighlight %}
 
@@ -239,21 +166,19 @@ Overriding
 So, speaking of sloths (or very tired students), how might we make a subclass that allows us to set negative energy?
 
 
-EXAMPLE INCOMING. LOOK OUT!
-
 {% highlight javascript %}
 
-class Snake extends Animal {
-    constructor(name: string) { super(name); }
-    move() {
-        alert("Flopping...");
-        super.move(5);
-    }
+function Sloth(name) {
+    Animal.call(this, name);
+}
 
-    set energy(amt:number) {
-    	this._energy = amt;
-	}
+Snake.prototype.move = function() {
+    alert("Flopping...");
+    Animal.move(5);
+}
 
+Snake.prototype.setEnergy = function(amt) {
+    this._energy = amt;
 }
 
 {% endhighlight %}
@@ -264,219 +189,226 @@ Here, let me prove to you that this sloth can truly have negative energy. (And y
 
 {% highlight javascript %}
 
-var anAmial:Animal = new Animal();
+var anAmial = new Animal();
 anAnimal.energy = -5;
 trace(anAnimal.energy); // 0
 
-var aSloth:Sloth = new Sloth();
+var aSloth = new Sloth();
 sloth.energy = -5;
 trace(sloth.energy); //-5
 
 {% endhighlight %}
+
+Including files
+------------------------
+
+Larger projects typically will have a **lot** of javascript code. Enough that you will need to break it up into smaller pieces, and include only the parts that you need in certain files as you work. Enter modules and includes.
+
+
+Different types of modules
+--------------------------
+
+Currently there are three module systems one may see referenced in the javasript world:
+
+AMD: Used by require.js, primarily a font-end, asyncronous loading system
+commonJS: Used by backend, node developers. Brought to the frontend with the tool **browserify**
+ES 6 "Harmony" modules: Soon to be implemented as the base javascript module system.
+
+
+For this class we'll be using the commonJS approach, with browserify to do some of the heavy lifting.
+
 
 Modules
 --------------------------
 
 At the end of the day it is likely you're going to have a lot of classes and you're going to want to associate them all together in a way that doesn't conflict with other packages of code. Modules are one way of doing this.
 
-Let's build out some classes to go along with this package structure:
+Let's build out some classes to go along with this package structure.
 
-*Animal.ts*
+**For each of them, note the module.exports at the bottom**
+
+For the subsequent classes, note the require line at the top.
+
+Add these files into 
+
+*Animal.js*
 
 {% highlight javascript %}
 
-module Animals {
-
-	
-	export class Animal {
-
-		public var name:string;
-		public var age:number;
-		public var genus:string;
-		private var _energy:number = 0;
-
-		constructor() {
-			name = "Mr. Wiggles";
-		}
-
-		eat() {
-			this.digest();
-		}
-
-		private digest() {
-			_energy++;
-		}
-
-		get energy():number {
-			return _energy;
-		}
-
-		set energy(amt:number) {
-			if(amt > 0) {
-				this._energy = amt;
-			}
-		}
-
-	}
-
+function Animal(name) {
+    this.name = name;
+    this._energy = 10;
 }
+
+
+Animal.prototype.move = function(meters) {
+    alert(this.name + " moved " + meters + ".");
+    this.energy --;
+}
+
+Animal.prototype.digest = function() {
+    this.energy ++;
+}
+
+Animal.prototype.eat = function() {
+    this.digest();
+}
+
+Animal.prototype.getEnergy = function() {
+    return _energy;
+}
+
+Animal.prototype.setEnergy = function(amt) {
+    if(amt > 0) {
+        this._energy = amt;
+    }
+}
+
+module.exports = Animal;
 
 {% endhighlight %}
 
 And, we move one through two more classes:
 
-*Mamal.ts*
+*Mamal.js*
 
 {% highlight javascript %}
 
-module Animals {
-	
-	export class Mamal extends Animal {
+var Animal = require("Animal.js")
 
-		bodyTemp:number;
-		hairAmt:number;
-
-	}
+function Mamal() {
+    this.bodyTemp = 10;
+    this.hairLength = 2;
 }
+
+Mamal.prototype = new Animal();
+
+module.exports = Mamal;
 
 {% endhighlight %}
 
-*Dog.ts*
+*Dog.js*
 
 {% highlight javascript %}
 
-module Animals {
-	
-	export class Dog extends Mamal {
+var Animal = require("Animal.js");
+var Mamal = require("Mamal.js");
 
-		loyalty:number;
-
-		bark() {
-			trace("Woof!");
-		}
-
-	}
-
+function Dog() {
+    this.loyalty = 5;
 }
+
+Dog.prototype = new Mamal();
+
+Dog.prototype.bark = function() {
+    console.log("Woof!");
+}
+
+module.exports = Dog;
 
 {% endhighlight %}
 
 
-And, finally, to my dogs:
-
-*Husky.ts*
-
-{% highlight javascript %}
-
-module Animals {
-
-	export class Husky extends Dog {
-
-		bark()  {
-			//They don't
-		}
-
-		//they do this instead
-		ululate()  {
-			trace("Awwooowoowooowoo!");
-		}
-
-	}
-
-}
-
-{% endhighlight %}
-
-Great. Did you follow that? We are now four folders deep, with three levels of inheritance.
-
-Question for you: how many methods does Husky have?
-
-6, including the getter & setter (7 if you count the constructor)
+Now we've created some files that assume *other files* will be included. 
 
 
-Importing files
+
+Importing files (using commonJS, browserify)
 ---------------------------------------
 
-Remember, all classes in flash need to be imported. Its fine if you're working with no package. Once you start putting your files into subfolders, however, they *have* to be imported. So, if we want to use our Dog and Animal classes in our code, we will need to write these imports at the top of main.js
+Before we can move on into the world of breaking our code up, we need to learn how to set up a project to compile our javascript code.
+
+Firstly, one more command line tool, browserify. Install it via the instructions on its site: [http://browserify.org/](http://browserify.org/).
+
+You will need to create one more file, in your root directory (call it app.js). Have it require at least one other file (Dog.js would be a good one).
+
+Navigate to that file, and then run `browserify app.js -o \..\js\app.js`
+
+This will combine all the files that you required ionto one *app.js* file in your js folder.
+
+Setting up grunt to compile automatically
+-----------------------------------------
+
+While its cool that we can compile our code via command, its also a bit of a total pain in the butt. It might be useful if we instead got another systehm to do it for us automatically.
+
+This is where grunt - that library you installed way back at the start of class, comes in.
+
+The pieces of grunt
+------------------------------
+
+Grunt file - describes what grunt needs to do when it runs it tasks, and what tasks it has available. Some commonly used tasks that grunt can run include starting up small webservers to test your project, turning your Javascript into ugly javascript so that its somewhat harder for people to steal (and a smaller size in general to downloa), and combinining many javascript files into one (via a number of different methods. We'll be using browserify for our needs).
+
+package.json - *technically a node file* this file lists all the external libraries one needs in order for the the project to actually run / compile correctly. 
+
+This, sadly, means that we need to put a few more files into our projects from now on. Here is the templates for each of them
+
+package.json
 
 {% highlight javascript %}
-
-/// <reference path="Animal.ts" />
-/// <reference path="Dog.ts" />
-/// <reference path="Husky.ts" />
-
-{% endhighlight %}
-
-**important**
-
-In order to have your scripts come in correctly, you will need to add the \--out flag to your command in the typescript file watcher. You can edit this in file->settings->file watchers->seelect typescript and click on the little pencil icon. Add it after the \--sourcemap option
-
-The full line should look like this:
-
-\--out $FileNameWithoutAllExtensions$.js $FileName$
-
-Polymorphism
---------------------------------------
-
-We are almost done. With classes, at least. Now we have a whole animal kingdom, don't we? What do do with them? How about a party; let's feed them all.
-
-Okay.
-
-Here we go.
-
-{% highlight javascript %}
-
-var animals:Array = new Array();
-
-//fill animals with a random assortment of cats, dogs, echidnas, and fish
-
-
-//loop through and feed them
-for(var i:number = 0; i < animals.length; i++) {
-	var animalAtIndex:??? //Uh oh, we have a problem...
-						//Is this a dog, cat, fish, or whatever else?
-						//hmmm...
+{
+  "name": "Project Name",
+  "version": "0.0.0",
+  "description": "",
+  "main": "gruntfile.js",
+  "author": "",
+  "license": "BSD-2-Clause",
+  "dependencies": {},
+  "devDependencies": {
+    "grunt-browserify": "~3.3.0",
+    "grunt": "~0.4.5",
+    "grunt-contrib-watch": "~0.6.1"
+  }
 }
 
 {% endhighlight %}
 
-Well, we have a problem. We don't have one type of thing in that array. We have many types (cats, dogs, fish, etc). We can't type them individually in that array, it has to be one type or bust. Thankfully, we don't need to worry about this too much, because they are all **Animals**, which means that we can use *polymorhpism* to its fullest effect.
 
-**Polymorphism** is the ability to treat any subclass as if it were one of it's superclasses instead. When you do this, you lose the capabilities of the subclass, but it allows you to write more broadly applicable code.
-
-An example:
+gruntfile.js
 
 {% highlight javascript %}
+module.exports = function(grunt) {
 
-var someAnimal:Animal = new Dog(); //yep, this is fine
+  grunt.initConfig({
+    pkg: grunt.file.readJSON('package.json'),    
+    browserify: {
 
-someAnimal.eat(); // also fine - eat is defined in the Animal class
-someAnimal.bark(); // not acceptable - bark is not defined by the animal class
+        main: {
+          options: {
+            browserifyOptions: {
+              debug: true
+            }
+          },
+          src: 'src/app.js',
+          dest: 'scripts/app.js'
+        }
+    },
+    watch: {
+      files: [ 'src/**/*.js' ],
+      tasks: ['browserify'],
+      options: {
+          spawn: false,
+        },
+    }
+
+  });
+
+  grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-browserify');
+
+  grunt.registerTask('default', [ 'watch']);
+
+};
 
 {% endhighlight %}
 
-Again, polymorphism means that we can use a subclass as if it were its super class, but we only have access to the methods and properties defined by the subclass.
 
-So, let's use polymorphism to go back and fix up our animal party:
+In the first file, package.json, we specify the name of the application we are woking on, followed by a series of "dev dependencies", which are things that need to be on the users computer / in the same directory for the development environment to work properly. If they are not on the developer's computer, it can be fixed by navigating to the folder and running `npm install` in the command prompt.
 
-{% highlight javascript %}
+The second file sets up grunt to watch all of the files in the **src** folder, and will automatically compile them into a file in js/app.js *whenever you save any of your .js files*.
 
-var animals:Array = new Array();
+Put both of these into your root directory of your project. In PHPSTorm open up the terminal and type `npm install` and wait for everything to install. Then, type 'grunt' to start the task manager to watch for your changes to your files.
 
-//fill animals with a random assortment of cats, dogs, echidnas, and fish
-
-
-//loop through and feed them
-for(var i:number = 0; i < animals.length; i++) {
-	
-	//get
-	var animalAtIndex:Animal = animals[i];
-
-	//feed
-	animalAtIndex.eat();
-}
-
-{% endhighlight %}
+**if you want to use browserify, you will need to open the command prompt every time you start working and again run the `grunt` command**
 
 
 Conclusion
@@ -486,9 +418,4 @@ That's it! Some points:
 
 - OOP aims to recreate objects via methods (functions) and properties (variables)
 - OOP classes can *inherit* from other classes, giving them all the methods and properties of the superclass
-- Packages are a way to organize your classes. They are based on folders
-- When importing packages, write the folder structure, replacing "/" with "."
-- Classes can be used as if they were their super class. This is *polymorphism*
-
-
-Classes take a little while to get used to, so start programming and don't get discouraged!
+- Modules are a way to organize your classes.
