@@ -149,7 +149,6 @@ So, how does one use the new functions? Like a property, actually. Lets take a l
 
 var anAnimal:Animal = new Animal('Doofus');
 
-
 //use our setter function:
 myAnimal.energy = 5;
 
