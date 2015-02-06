@@ -43,7 +43,7 @@ Constructor Function, Instances, Using Methods and Properties
 
 {% highlight javascript %}
 
-var myAnimal:Animal = new Animal("Amorphorous");
+var myAnimal = new Animal("Amorphorous");
 myAnimal.move(10);
 
 {% endhighlight %}
@@ -111,11 +111,11 @@ function Animal(name) {
 
 Animal.prototype.move = function(meters) {
     alert(this.name + " moved " + meters + ".");
-    this.energy --;
+    this._energy --;
 }
 
 Animal.prototype.digest = function() {
-    this.energy ++;
+    this._energy ++;
 }
 
 Animal.prototype.eat = function() {
@@ -346,18 +346,20 @@ package.json
 
 {% highlight javascript %}
 {
-  "name": "Project Name",
+  "name": "Prototypes_and_Objects",
   "version": "0.0.0",
   "description": "",
-  "main": "gruntfile.js",
-  "author": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "TF",
   "license": "BSD-2-Clause",
-  "dependencies": {},
-  "devDependencies": {
-    "grunt-browserify": "~3.3.0",
-    "grunt": "~0.4.5",
-    "grunt-contrib-watch": "~0.6.1"
-  }
+    "devDependencies": {
+        "grunt-browserify": "~3.3.0",
+        "grunt": "~0.4.5",
+        "grunt-contrib-watch": "~0.6.1"
+    }
 }
 
 {% endhighlight %}
@@ -368,37 +370,36 @@ gruntfile.js
 {% highlight javascript %}
 module.exports = function(grunt) {
 
-  grunt.initConfig({
-    pkg: grunt.file.readJSON('package.json'),    
-    browserify: {
+    grunt.initConfig({
+        pkg: grunt.file.readJSON('package.json'),
+        browserify: {
 
-        main: {
-          options: {
-            browserifyOptions: {
-              debug: true
+            main: {
+                options: {
+                    browserifyOptions: {
+                        debug: true
+                    }
+                },
+                src: 'src/main.js',
+                dest: 'js/main.js'
             }
-          },
-          src: 'src/app.js',
-          dest: 'scripts/app.js'
-        }
-    },
-    watch: {
-      files: [ 'src/**/*.js' ],
-      tasks: ['browserify'],
-      options: {
-          spawn: false,
         },
-    }
+        watch: {
+            files: [ 'src/**/*.js' ],
+            tasks: ['browserify'],
+            options: {
+                spawn: false
+            }
+        }
 
-  });
+    });
 
-  grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-browserify');
+    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-browserify');
 
-  grunt.registerTask('default', [ 'watch']);
+    grunt.registerTask('default', [ 'watch']);
 
 };
-
 {% endhighlight %}
 
 
