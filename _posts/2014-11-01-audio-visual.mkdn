@@ -54,6 +54,7 @@ Changing the audio to be played
 
 {% highlight javascript %}
 myAudio.src = "new/url/to/file.wav";
+myAudio.load();
 {% endhighlight %}
 
 Audio events
