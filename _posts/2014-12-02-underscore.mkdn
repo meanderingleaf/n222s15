@@ -42,7 +42,7 @@ Our data
 Sorting Collections
 --------------------------------
 
-Done with the **[_.sortBy](http://underscorejs.org/#sortBy)** method. 
+Done with the **[_.sortBy](http://underscorejs.org/#sortBy)** method.
 
 - Takes a collection object
 - Sorts low-to-high based on what the second argument (a function) returns
@@ -59,7 +59,9 @@ $.getJSON('data/data.json', function(data) {
 Filtering Collections
 ---------------------------------------
 
-Done with the **[_.filter](http://underscorejs.org/#filter)** method, or the (simpler) **[_.where](http://underscorejs.org/#where)** method.
+Done with the **[_.filter](http://underscorejs.org/#filter)** method
+
+or the (simpler) **[_.where](http://underscorejs.org/#where)** method.
 
 **filter**
 
