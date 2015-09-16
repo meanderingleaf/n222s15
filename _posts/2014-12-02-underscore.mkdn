@@ -20,8 +20,6 @@ Typically when you have a collection you are quite often going to need to do a f
 2. Filter them (select only a certain portion of the collection based on some test)
 3. Search them (for a particular value/item)
 
-
-
 Our data
 -------------------------------
 
