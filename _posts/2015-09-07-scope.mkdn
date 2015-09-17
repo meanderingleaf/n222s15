@@ -1,0 +1,76 @@
+---
+layout: post
+title:  "Scope"
+date:   2014-09-07 02:24:54
+categories: update
+---
+
+This scope
+---------------------------
+
+This
+-----------------------------
+
+- When working with objects, to get to its properties, we use the keyword 'this'
+- `this.name`
+- `this.method();`
+
+
+What 'this' is
+-------------------------------
+
+- The keyword `this` is a reference to the object the function is running in.
+- The **this** object is not always the same it was in the containing scope
+- You will lose your scope **anytime you make an anonymous function**
+
+Losing the parent 'this' - ajax
+--------------------------------
+
+```
+
+function TestClass() {
+  this.name = "Still test class.";
+}
+
+TestClass.prototype.doLoad = function() {
+
+  console.log(this.name) //"Still test class"
+
+  $.get("file.awesome", function() {
+      console.log(this.name)  //null
+  })
+}
+
+```
+
+
+Fixing the scope shift - bind
+---------------------------------
+
+
+There is a way to specify the context that a function will run it.
+
+**Bind** is a method of javascript functions. This method takes an argument, which is the context to run the method is *every time it is called*
+
+
+```
+
+var Pikachu = {
+  noises: "Few"
+}
+
+var Doggy = {
+  noises: "Wouf"
+}
+
+function whatNoisesIsThis() {
+  console.log(this.noises);
+}
+
+//make specially bound functions
+
+//test
+whatNoisesIsThis(); //null
+
+
+```

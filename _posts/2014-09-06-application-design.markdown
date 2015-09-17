@@ -61,9 +61,23 @@ Placing the components
 - Will either select objects on the DOM an attach events and data
 - Or create new objects at runtime and place them into the DOM (typically in placeholders)
 
-Storing data
+
+Communication Between Components
+-----------------------------------
+
+- Acts as the mailer
+- Gets messages from one component, makes sure they move to others
+- Can also make values accessible to all components via something called **application state**
+
+Storing data / Application State
 ---------------------------------
 
 - Later on applications will have data that will be loaded into the highest level, to be referenced by other objects  in the program
 
-Comminication Between components
+Finite State Machines
+--------------------------------
+
+- Many applications act as Finite State Machines
+- Essentially, what this means is that they only will be in one 'state' (or page) at a time
+- To move from page to page, a transition must be manually triggered.
+- The change from page to page is typically accomplished via a transition function
