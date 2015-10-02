@@ -6,6 +6,85 @@ categories: update
 ---
 
 
+Application Use of Data
+------------------------
+
+- data is what makes applications truly different.
+
+
+- Does this in two ways:
+  - Updating information
+  - Persisting application state
+
+
+Application State
+------------------------
+
+What values are you in your variable at any given moment of your application running.
+
+
+Your application _is_ your application state
+------------------------------
+
+To change your state
+------------------------------
+
+Change what values are inside of particular variables
+Update the UI to reflect these new values
+
+
+How do you find the data to show
+-----------------------------
+
+Query for the data in the datastore (ugh, sql)
+Filter the data out from the datastore (more javascripty)
+
+Filtering data
+-----------------------------
+
+Loop through all the entries in an array
+Copy elements out of the array and into a new one, if they're what you're looking for
+
+
+{% highlight javascript %}
+var names = [ "Dan", "Dave", "Darien", "Giraffe" ];
+
+//this will have our filtered data
+var filtered = [];
+
+//loop through our data
+for(var i=0; i < names.length; i++) {
+  //does it start with 'Da'?
+  if(names[i].indexOf("Da") > -1) {
+
+    //If it does, add it into the filtered array
+    filtered.push(names[i]);
+  }
+
+}
+
+//do whatever you need with the filtered data
+//Like add it to the DOM!
+//Woo.
+
+{% endhighlight %}
+
+
+Copying data
+--------------------------
+
+Unless we actually need to modify our orginal datastore, it is best to copy the data over.
+
+Maintains reliability - we know we can come back to it, unmodified, in the future.
+
+Data filtering code is ugly
+--------------------------
+
+Most people use libraries that will do the filtering in a.. nicer looking way.
+
+Like underscore.js.
+
+
 Underscore
 -------------------------
 
@@ -102,4 +181,25 @@ Done with the **[_.findWhere](http://underscorejs.org/#findWhere)** method.
 	//will return an array with only the names of type "real"
 	var res = _.findWhere(data.list, function(item) { id: 1 });
 	console.log(res);
+{% endhighlight %}
+
+
+
+Looping through a collection
+------------------------------------------
+
+Instead of writing a long form for, we can also use the **[_.each](http://underscorejs.org/#each)** command.
+
+This will create a loop that will run a function on every object in the array for you. How kind.
+
+{% highlight javascript %}
+
+  //run the function 'displayName' with each object in the array as input
+	_.each(res, displayName);
+
+  //this function takes in an object from the array
+  //and displays.. its name. In the console.
+  function displayName(obj) {
+    console.log(obj.name);
+  }
 {% endhighlight %}
