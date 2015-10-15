@@ -1,0 +1,74 @@
+---
+layout: post
+title:  "Components"
+date:   2015-10-15 03:24:54
+categories: update
+---
+
+
+Components
+--------------
+
+- Self-contained
+- Reusable
+- Easily shared
+
+Examples
+--------------
+
+- Calendar object
+- Slider object
+- Card object
+
+Three parts of a component
+---------------
+
+1. State /  variables
+2. Methods / capabilities
+3. Display / feedback
+
+Self-contained
+--------------
+
+- Handles their own state
+- Does not require an outside object to work correctly
+
+State
+--------------
+
+- All of the properties that make up the component
+
+Making a component
+--------------
+
+1. Get the code out of the global space
+2. Create a Javascript class / object
+3. Write all the functionality for that
+
+Making Templates (without a framework)
+--------------
+
+Write html, in a javascript string
+
+{% highlight javascript %}
+
+var tweetTemplate = “
+<div>
+	<div><img src=‘{image}’ /></div>
+	<div>{username}</div>
+	<div>{body}</div>
+</div>
+“;
+
+//fill in the data
+var userData = {
+ name: “David”,
+ image: “whatever.jpg”,
+ body: “Testing this thing.”
+}
+
+var filledTemplate = TweetTemplate.replace(“{username}”, userData.name);
+filledTemplate = filledTemplate.replace(“{image}”, userData.image);
+filledTemplate = filledTemplate.replace(“{body}”, userData.body);
+
+{% endhighlight %}
