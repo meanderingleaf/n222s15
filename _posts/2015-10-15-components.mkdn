@@ -18,7 +18,8 @@ Examples
 
 - Calendar object
 - Slider object
-- Card object
+- Tweet template
+- Button
 
 Three parts of a component
 ---------------
@@ -41,34 +42,259 @@ State
 Making a component
 --------------
 
-1. Get the code out of the global space
+1. Get the component's code and considerations out of the global space
 2. Create a Javascript class / object
-3. Write all the functionality for that
+3. Get access to the component's markup (or place it onto the page)
+4. Write the code to handle *just that componet* on the page
+5. Eport that component so other scripts can see it
 
-Making Templates (without a framework)
---------------
 
-Write html, in a javascript string
+
+Step one - Goodbye Global
+---------------------
+
+- everything you write outside of a function or object is scoped to the global object
+- This is, in general, Pretty Bad
+- The reason for this is that if other code libraries are included in the page that **also** use the global space, there is a chance they they could use variable names that are the same as yours
+- If they use the same variable names in the global scope.. they overwrite your varibles!
+- This is called *polliting the global space*
+
+
+Getting out of the global namespace means you need to write something called a *self-executing anonymous function* which is, perhaps, some of the weirdest looking syntax ever 'invented'.
+
+
+Here you are. A function, without its name, that calls itself. Feel free to copy and paste in the future if the syntax is too much, too weird, or too terrifying.
+
 
 {% highlight javascript %}
 
-var tweetTemplate = “
-<div>
-	<div><img src=‘{image}’ /></div>
-	<div>{username}</div>
-	<div>{body}</div>
+//this function calls itself. How perverse.
+(function() {
+	//everything inside of this function is outside of the global namespace
+	//phew.
+})()
+
+{% endhighlight %}
+
+
+Step two - Making a javascript class / object inside that function
+-----------------------
+
+Easy! We've done this before. Let's make another dog object, because those are fun.
+
+
+{% highlight javascript %}
+
+//anon function, so we don't litter
+(function() {
+
+	//This function will never be overwritten
+	//it is also fluffy, and cute.
+	function DogComponent() {
+		this.name = "Rufus";
+	}
+
+	DogComponent.prototype.bark = function() {
+		console.log(this.name + " ... barks.");
+	}
+})()
+
+{% endhighlight %}
+
+
+Step three - get the DOM elements the component will be using
+------------------------------------
+
+
+In general, all of the DOM elements should be contained under one root object (typically a div). Here's an example of what the markup might look like:
+
+
+
+{% highlight html %}
+
+<div id="potentiallyADog">
+	<div class='name'></div>
+	<div class='barks'></div>
+	<button class='btnSpeak'>Speak!</button>
 </div>
-“;
 
-//fill in the data
-var userData = {
- name: “David”,
- image: “whatever.jpg”,
- body: “Testing this thing.”
-}
+{% endhighlight %}
 
-var filledTemplate = TweetTemplate.replace(“{username}”, userData.name);
-filledTemplate = filledTemplate.replace(“{image}”, userData.image);
-filledTemplate = filledTemplate.replace(“{body}”, userData.body);
+- There's a few different ways of getting this div onto the page.
+
+
+1. Write the HTML for the component on the page and pass in the ID to the component's constructor, letting it get access to the sub-elements.
+2. Have the component create its own elements and place them onto the DOM (this will be covered later)
+
+
+
+Using pre-written markup for a component
+-------------------------------------------------------
+
+
+Again, assuming that this markup is already on the page once our script loads:
+
+{% highlight html %}
+
+<div id="potentiallyADog">
+	<div class='name'></div>
+	<div class='barks'></div>
+	<button class='btnSpeak'>Speak!</button>
+</div>
+
+{% endhighlight %}
+
+Then, our component needs only to know the ID of the root element. It can get the rest via sub-selection.
+
+{% highlight javascript %}
+
+//anon function, so we don't litter
+(function() {
+
+
+	//assuming rootID is set as "#potentiallyADog"
+	function DogComponent(rootID) {
+		this.name = "Rufus";
+
+		//get the root
+		this.rootElement = document.querySelector(rootID)
+
+		//get the sub elements
+		this.dvName = this.rootElement.querySelector(".name");
+		this.dvBarks = this.rootElement.querySelector(".barks");
+		this.btnSpeak = this.rootElement.querySelector(".btnSpeak");
+	}
+
+})()
+
+{% endhighlight %}
+
+
+
+Step four - Have the component handle all its own concerns
+------------------------------------
+
+Now that we can create an element that is seperate from all others, and make sure it handles all its down concerns, we can the program functionality, focusing only on that particular object's concerns.
+
+Other possible components might have variables to control which picture is currently showing in an image slider, or what extra information might be shown in a status update. This was multiple components can be on the page which are all running off the same codebase, just with subtle differences in their state.
+
+Here the code responds to its speak button being cliked, and counts how many times that particular button has been clicked. 
+
+
+{% highlight javascript %}
+
+//anon function, so we don't litter
+(function() {
+
+
+	//assuming rootID is set as "#potentiallyADog"
+	function DogComponent(rootID) {
+		this.name = "Rufus";
+		this.timesBarked = 0;
+
+		//get the root
+		this.rootElement = document.querySelector(rootID)
+
+		//get the sub elements
+		this.dvName = this.rootElement.querySelector(".name");
+		this.dvBarks = this.rootElement.querySelector(".barks");
+		this.btnSpeak = this.rootElement.querySelector(".btnSpeak");
+
+		//then do things with the sub elements
+		this.dvName.innerHTML = this.name;
+		this.btnSpeak.addEventListener("click", this.bark.bind(this));
+	}
+
+	DogComponent.prototype.bark = function() {
+		this.timesBarked ++;
+		this.dvBarks.innerHTML = this.name + " has barked " + this.timesBarked + "times.";
+	}
+
+})()
+
+{% endhighlight %}
+
+
+Step five - Exporting the code for use
+-------------------------------------------------
+
+With our componet created (isn't it wonderful?), its now time to make it available to the rest of our javascript code.
+
+
+Remember, right now all our code is inside of that anymous function. Which means our wonderful Dogject (err.. dog object) stops existing the moment that function exits.
+
+
+But, we can cheat.
+
+
+You see, we have access to the global object still. Its called `window`. And its an object, which means we can add values to its properties from.. well, wherever really.
+
+
+If we want our object to be available to the rest of our code, we need to copy it over to a window-level property. This has been done on the final line of this component here.
+
+
+
+{% highlight javascript %}
+
+//anon function, so we don't litter
+(function() {
+
+
+	//assuming rootID is set as "#potentiallyADog"
+	function DogComponent(rootID) {
+		this.name = "Rufus";
+		this.timesBarked = 0;
+
+		//get the root
+		this.rootElement = document.querySelector(rootID)
+
+		//get the sub elements
+		this.dvName = this.rootElement.querySelector(".name");
+		this.dvBarks = this.rootElement.querySelector(".barks");
+		this.btnSpeak = this.rootElement.querySelector(".btnSpeak");
+
+		//then do things with the sub elements
+		this.dvName.innerHTML = this.name;
+		this.btnSpeak.addEventListener("click", this.bark.bind(this));
+	}
+
+	DogComponent.prototype.bark = function() {
+		this.timesBarked ++;
+		this.dvBarks.innerHTML = this.name + " has barked " + this.timesBarked + "times.";
+	}
+
+	window.DogComponent = DogComponent;
+
+})()
+
+{% endhighlight %}
+
+
+Working this way ensures that we are very precise about what variables we place onto the global namespace, and have less of a chance of our code colliding with any other code on the page.
+
+
+Using our wonderful component
+----------------------------------------------------
+
+Great. You've got this component created, either by placing the code into your script, or, preferrably, making a new javascript file with the code, and including that file before the rest of your code.
+
+
+As a reminder, our component currently assumes that there's a div on the page with a structure like this:
+
+{% highlight html %}
+
+<div id="potentiallyADog">
+	<div class='name'></div>
+	<div class='barks'></div>
+	<button class='btnSpeak'>Speak!</button>
+</div>
+
+{% endhighlight %}
+
+With that markup present, and our dog object code included earlier in the page, we need only write this one line of code. (the "#potentiallyADog" gets passed into the DogObject as 'rootID', which lets the object via that first querySelector. Its the same thing as writing `document.querySelector('#potentiallyADog')` but.. more customizeable).
+
+{% highlight javascript %}
+
+var dogInstance = new DogObject( "#potentiallyADog" );
 
 {% endhighlight %}
