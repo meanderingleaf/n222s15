@@ -9,6 +9,7 @@ categories: update
 Making Components Talk
 -------------------------------------------------
 
+
 Recall that a critical consideration of objects and components is the **principle of self-containment**. That is, the component should, once it is properly initialized, be able to run itself without strictly requiring input from the rest of the application.
 
 This poses a problem for your applications. What happens when you need one part of your application to interface or speak with another part? They can’t right now, because they’re all self-contained. In order to get your different components in your application working together, you will need to have your components message each other.
@@ -16,6 +17,7 @@ This poses a problem for your applications. What happens when you need one part 
 
 Component Messaging
 -------------------------------------
+
 
 All of our objects, in real life, give us feedback in various forms. Phones ring, clocks tick, news scrolls. We receive these messages, and can decide what to do with them. There’s typically some space, some medium in between us and our tools that carries that message. Light and space. Sound and air.
 
@@ -27,6 +29,7 @@ In general, making components talk comes in two parts:
 
 Exposing a message (callback)
 -------------------------------------------
+
 
 In the world of Javascript, a major way that components talk to each other is via the use of a callback. Callbacks take advantage of the fact that, in Javascript, functions are actually a variable type, just like strings, booleans, and numbers. In essence, what it means is that we can create a variable and set it equal to a function.
 
@@ -41,7 +44,9 @@ var functionHolder = function() {
 }
 {% endhighlight %}
 
+
 (While the function is anonymous, if actually is accessible! In functionHolder. Which means we can run the function with the normal function execution syntax.
+
 
 {% highlight javascript %}
 functionHolder(); // will execute the contents in the anonymous function
