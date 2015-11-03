@@ -6,7 +6,7 @@ categories: update
 ---
 
 Making Components Talk
--------------
+=================================
 
 
 Recall that a critical consideration of objects and components is the **principle of self-containment**. That is, the component should, once it is properly initialized, be able to run itself without strictly requiring input from the rest of the application.
