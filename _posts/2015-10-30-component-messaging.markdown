@@ -1,0 +1,196 @@
+---
+layout: post
+title:  "Component Messaging"
+date:   2015-10-30 03:24:54
+categories: update
+---
+
+Making Components Talk
+-----------------------------
+
+
+Recall that a critical consideration of objects and components is the **principle of self-containment**. That is, the component should, once it is properly initialized, be able to run itself without strictly requiring input from the rest of the application.
+
+
+This poses a problem for your applications. What happens when you need one part of your application to interface or speak with another part? They can’t right now, because they’re all self-contained. In order to get your different components in your application working together, you will need to have your components message each other.
+
+
+Component Messaging
+-------------------------------------
+
+
+All of our objects, in real life, give us feedback in various forms. Phones ring, clocks tick, news scrolls. We receive these messages, and can decide what to do with them. There’s typically some space, some medium in between us and our tools that carries that message. Light and space. Sound and air.
+
+
+In general, making components talk comes in two parts:
+
+
+1. Exposing events or messages that your component can either receive, or send. (This might be called developing an API for your component)
+2. Writing code outside of the the component (in the global scope, in this class), that acts as the medium (or go-between) for your components to speak though.
+
+
+Exposing a message (callback)
+----------------
+
+
+In the world of Javascript, a major way that components talk to each other is via the use of a callback. Callbacks take advantage of the fact that, in Javascript, functions are actually a variable type, just like strings, booleans, and numbers. In essence, what it means is that we can create a variable and set it equal to a function.
+
+
+Functions as just a variable type
+---------
+
+
+{% highlight javascript %}
+var functionHolder = function() {
+
+}
+{% endhighlight %}
+
+
+(While the function is anonymous, if actually is accessible! In functionHolder. Which means we can run the function with the normal function execution syntax.
+
+
+{% highlight javascript %}
+functionHolder(); // will execute the contents in the anonymous function
+{% endhighlight %}
+
+
+Making a callback function
+------------
+
+
+A callback function is a property that is not defined inside of the object / component.
+
+Instead, this property is pointed to a function in another object in a different scope. Yes, this is breaking our ‘separation of concerns’ rule. It is unavoidable at this point.
+
+Here is a simple example of a callback function. Note that, in the Dog object, the method ‘whenBark’ is never explicitly defined. Yet, it is still clearly called inside of the bark method of the dog object. This is what is meant by the object relying on something else to fill in function.
+
+{% highlight javascript %}
+(function() {
+function Dog() {
+
+}
+
+Dog.prototype.bark = function() {
+	this.whenBark();
+}
+
+	window.Dog = Dog;
+})();
+{% endhighlight %}
+
+
+So, assuming that your program includes this dog object, let’s do the second part of this phase: filling in the the method to be called.
+
+{% highlight javascript %}
+//first we need an actual instance of the dog
+var myDog = new Dog();
+
+//then fill in the callback method
+myDog.whenBark = function() {
+	console.log("Well, that dog barked.");
+}
+
+//now you can use dog’s bark method, and its callback will be accessed
+myDog.bark(); // you will see “Well, that dog barked” in your console
+{% endhighlight %}
+
+
+Calling messages on other objects
+--------------
+
+
+The next step in this is making components talk. Let’s make a cat object that will run when your dog barks.
+
+
+{% highlight javascript %}
+//first our objects
+(function() {
+function Dog(dogName) {
+	this.name = dogName;
+}
+
+Dog.prototype.bark = function() {
+	this.whenBark();
+}
+
+	window.Dog = Dog;
+})();
+
+(function() {
+function Cat(catName) {
+this.name = catName;
+}
+
+Cat.prototype.run = function() {
+	console.log("Cat is running away!");
+}
+
+	window.Cat = Cat;
+})();
+
+//now make our objects
+var myCat = new Cat("Claus");
+var myDog = new Dog("Rex");
+
+//assign a reference to cat’s run function. This will link these two objects together
+myDog.whenBark = myCat.run;
+
+//test it out
+myDog.bark(); //You will see: “Cat is running away!”
+{% endhighlight %}
+
+
+Passing data along with your message
+-------------------------
+
+Its entirely possible to pass along arguments to your callbacks. Here is a modified version of Dog and Cat, that passes some data from our Dog object, to our Cat object. The new things to note here are `this.whenBark(this.name);` is passing along the Dog’s name to the callback, and the cat run function expects (and uses) an assailant name in its method now.
+
+*The cat method*
+
+
+{% highlight javascript %}
+Cat.prototype.run = function(assailant) {
+	console.log("Cat is running away from " + assailant);
+}
+{% endhighlight %}
+
+
+*The full code*
+
+{% highlight javascript %}
+//first our objects
+(function() {
+function Dog(dogName) {
+	this.name = dogName;
+}
+
+Dog.prototype.bark = function() {
+	this.whenBark(this.name);
+}
+
+	window.Dog = Dog;
+})();
+
+(function() {
+function Cat(catName) {
+this.name = catName;
+}
+
+Cat.prototype.run = function(assailant) {
+	console.log("Cat is running away from " + assailant);
+}
+
+	window.Cat = Cat;
+})();
+
+//now make our objects
+var myCat = new Cat("Claus");
+var myDog = new Dog("Rex");
+
+//assign a reference to cat’s run function. This will link these two objects together
+myDog.whenBark = myCat.run;
+
+//test it out
+myDog.bark(); //You will see: "Cat is running away from Rex"
+{% endhighlight %}
